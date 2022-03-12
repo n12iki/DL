@@ -11,11 +11,12 @@ from collections import deque
 import copy
 
 class MAMeDataset(tf.keras.utils.Sequence):
-    def __init__(self, x, y, batch_size, n_class, mode='train'):
+    def __init__(self, batch_size, n_class, mode='train'):
         dataset = pd.read_csv('dataset/MAME_dataset.csv')
-        dataste = dataset[dataset['Subset']==mode]# [['Image File', 'Medium']]
-        print(dataset)
-        self.x, self.y = x, y
+        dataset = dataset[dataset['Subset']==mode]# [['Image File', 'Medium']]
+        self.images = list(dataset['Image file'])
+        self.labels = list(dataset['Medium'])
+
         self.batch_size = batch_size
         self.n_class = n_class
         
@@ -23,30 +24,25 @@ class MAMeDataset(tf.keras.utils.Sequence):
         return math.ceil(len(self.x) / self.batch_size)
 
     def __getitem__(self, idx):
-        batch_x = self.x[idx * self.batch_size:(idx + 1) *
-        self.batch_size]
-        batch_y = self.y[idx * self.batch_size:(idx + 1) *
-        self.batch_size]
-        
+        batch_x = self.images[idx * self.batch_size:(idx + 1) * self.batch_size]
+        batch_y = self.labels[idx * self.batch_size:(idx + 1) * self.batch_size]
         
         data_x = list()
-        for batch in batch_x:
-            tmp = list()
-            for img_path in batch:
-                try:
-                    img = imread(img_path)
-                    if img.shape != (192, 256, 3):
-                        img = cv2.resize(img,(256, 192))
-                    tmp.append(img)
-                except Exception as e:
-                    print(e)
-                    print('failed to find path {}'.format(img_path))
-            data_x.append(tmp)
+        for img_path in batch_x:
+            try:
+                img = imread(f'dataset/data_256/{img_path}')
+                print(img_path)
+                # if img.shape != (192, 256, 3):
+                #     img = cv2.resize(img,(256, 192))
+                data_x.append(img)
+            except Exception as e:
+                print(e)
+                print('failed to find path {}'.format(img_path))
         # 
         data_x = np.array(data_x, dtype='float32')
-        data_y = np.array(batch_y)
-        data_y = utils.to_categorical(data_y, self.n_class)
-        return data_x, data_y
+        # data_y = np.array(batch_y)
+        # data_y = utils.to_categorical(data_y, self.n_class)
+        return data_x, batch_y
     
     # def on_epoch_end(self):
     #     # option method to run some logic at the end of each epoch: e.g. reshuffling
