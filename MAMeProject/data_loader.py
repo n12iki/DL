@@ -17,32 +17,38 @@ class MAMeDataset(tf.keras.utils.Sequence):
         self.images = list(dataset['Image file'])
         self.labels = list(dataset['Medium'])
 
+        self.images = [img.split(".")[0] for img in self.images]
         self.batch_size = batch_size
         self.n_class = n_class
         
     def __len__(self):
-        return math.ceil(len(self.x) / self.batch_size)
+        return math.ceil(len(self.images) / self.batch_size)
 
     def __getitem__(self, idx):
         batch_x = self.images[idx * self.batch_size:(idx + 1) * self.batch_size]
-        batch_y = self.labels[idx * self.batch_size:(idx + 1) * self.batch_size]
         
-        data_x = list()
-        for img_path in batch_x:
+        data_x = []
+        data_y = []
+        
+        for img_name in batch_x:
             try:
-                img = imread(f'dataset/data_256/{img_path}')
-                print(img_path)
-                # if img.shape != (192, 256, 3):
-                #     img = cv2.resize(img,(256, 192))
-                data_x.append(img)
+                file_path = f'dataset/numpy_256/{img_name}.npy'
+                file = np.load(file_path, allow_pickle=True)
+                
+                y = np.zeros(self.n_class)
+                y[file[1]] = 1
+
+                data_x.append(file[0])
+                data_y.append(y)
+
             except Exception as e:
                 print(e)
-                print('failed to find path {}'.format(img_path))
-        # 
+                print('failed to find path {}'.format(file_path))
+        
         data_x = np.array(data_x, dtype='float32')
-        # data_y = np.array(batch_y)
-        # data_y = utils.to_categorical(data_y, self.n_class)
-        return data_x, batch_y
+        data_y = np.array(data_y)
+        
+        return data_x, data_y
     
     # def on_epoch_end(self):
     #     # option method to run some logic at the end of each epoch: e.g. reshuffling
