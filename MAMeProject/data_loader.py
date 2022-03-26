@@ -17,7 +17,7 @@ class MAMeDataset(tf.keras.utils.Sequence):
         self.images = list(dataset['Image file'])
         self.labels = list(dataset['Medium'])
 
-        self.images = [img.split(".")[0] for img in self.images]
+        self.images = ['.'.join(img.split(".")[:-1]) for img in self.images]
         self.batch_size = batch_size
         self.n_class = n_class
         
