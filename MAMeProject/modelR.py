@@ -6,7 +6,7 @@ from keras.regularizers import l2
 from keras.layers import GlobalAveragePooling2D,Flatten,Dense
 from keras import backend as K
 from keras import regularizers
-from keras.utils.vis_utils import plot_model
+#from keras.utils.vis_utils import plot_model
 
 
 def block(numConv,layer_in,n_filters,dropOutR,weight_decay):
@@ -36,7 +36,7 @@ def createModel(weight_decay,num_classes,globalAVGPooling):
 
     model=Model(inputs=visible,outputs=layer)
     model.summary()
-    plot_model(model, show_shapes=True, to_file='residual_module.png')
+    #plot_model(model, show_shapes=True, to_file='residual_module.png')
     return model
 
 def main():
