@@ -7,8 +7,8 @@ import math
 import pandas as pd
 import numpy as np
 import os
-from collections import deque
-import copy
+#from collections import deque
+#import copy
 
 class MAMeDataset(tf.keras.utils.Sequence):
     def __init__(self, batch_size, n_class, mode='train'):
