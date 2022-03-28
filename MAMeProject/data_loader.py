@@ -2,7 +2,7 @@ import tensorflow as tf
 # from sklearn.utils import shuffle
 import cv2
 from cv2 import imread, resize
-from tensorflow.keras import utils
+#from tensorflow.keras import utils
 import math
 import pandas as pd
 import numpy as np
