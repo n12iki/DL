@@ -8,7 +8,7 @@ globalAVGPooling = False
 num_classes = 20
 weight_decay = 1e-4
 loss = ['categorical_crossentropy', 'binary_crossentropy', 'mean_squared_error', 'mean_absolute_error'][0]
-n_epochs = 20
+n_epochs = 200
 batch_size = 128
 num_classes = 29
 

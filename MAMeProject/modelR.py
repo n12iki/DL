@@ -18,7 +18,7 @@ def block(numConv,layer_in,n_filters,dropOutR,weight_decay):
     for i in range(numConv-1):
         prev=conv1
         conv1=Conv2D(n_filters,(3,3),padding="same",activation="relu",kernel_initializer="he_normal",kernel_regularizer=regularizers.l2(weight_decay))(conv1)
-        conv1=add([conv1,prev])
+        #conv1=add([conv1,prev])
         #conv1=add([conv1,merge_input])    
     #drop=Dropout(dropOutR)(conv1)
     skip=add([conv1,merge_input])
@@ -28,9 +28,9 @@ def block(numConv,layer_in,n_filters,dropOutR,weight_decay):
 
 def createModel(weight_decay,num_classes,globalAVGPooling):
     visible = Input(shape=(256, 256, 3))
-    layer=block(3,visible,64,0.2,weight_decay)
-    layer=block(3,layer,64,0.3,weight_decay)
-    layer=block(2,layer,64,0.4,weight_decay)
+    layer=block(3,visible,32,0.2,weight_decay)
+    layer=block(2,layer,64,0.3,weight_decay)
+    layer=block(1,layer,64,0.4,weight_decay)
 
     if globalAVGPooling:
       layer=GlobalAveragePooling2D()(layer)
