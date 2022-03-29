@@ -1,5 +1,5 @@
 from tensorflow.keras import optimizers
-from data_loader import MAMeDataset
+from data_loaderR import MAMeDataset
 import matplotlib.pyplot as plt
 from modelR1 import createModel
 
@@ -31,12 +31,14 @@ def train():
     plt.plot(mdl_fit.history['val_loss'], label='val loss')
     plt.legend()
     plt.show()
+    plt.savefig('lossR1.png')
 
     # plot the AUC
     plt.plot(mdl_fit.history['acc'], label='train acc')
     plt.plot(mdl_fit.history['val_acc'], label='val acc')
     plt.legend()
     plt.show()
+    plt.savefig('aucR1.png')
 
 
 train()
