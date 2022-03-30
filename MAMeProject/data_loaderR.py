@@ -12,6 +12,9 @@ import random
 #import copy
 
 class MAMeDataset(tf.keras.utils.Sequence):
+
+
+
     def __init__(self, batch_size, n_class, mode='train'):
         dataset = pd.read_csv('dataset/MAME_dataset.csv')
         dataset = dataset[dataset['Subset']==mode]# [['Image File', 'Medium']]
@@ -22,6 +25,16 @@ class MAMeDataset(tf.keras.utils.Sequence):
         self.images = ['.'.join(img.split(".")[:-1]) for img in self.images]
         self.batch_size = batch_size
         self.n_class = n_class
+
+    def adjust_gamma(self,image, gamma=1.0):
+    	# build a lookup table mapping the pixel values [0, 255] to
+    	# their adjusted gamma values
+        invGamma = 1.0 / gamma
+        x = np.array([((i / 255.0) ** invGamma) * 255
+    	
+        for i in np.arange(0, 256)]).astype("uint8")
+    	# apply gamma correction using the lookup table
+        return cv2.LUT(image, x)
         
     def __len__(self):
         return math.ceil(len(self.images) / self.batch_size)
@@ -41,19 +54,25 @@ class MAMeDataset(tf.keras.utils.Sequence):
                 y[file[1]] = 1
                 img=file[0]
                 if self.mode=="test":
-                    rotateBy=random.choice([0,90,180,270])
                     (h, w) = img.shape[:2]
                     (cX, cY) = (w // 2, h // 2)
-                    M = cv2.getRotationMatrix2D((cX, cY), rotateBy, 1.0)
-                    img = cv2.warpAffine(img, M, (w, h))
-                    xMin=random.choice(range(cX)-40)
-                    xMax=random.choice(range(cX)+40)
-                    yMin=random.choice(range(cY)-40)
-                    yMax=random.choice(range(cY)+40)
-                    img=img[yMin:yMax, xMin:xMax]
-                    img=cv2.resize(img, (256,256), interpolation = cv2.INTER_AREA)
-                    img=tf.image.adjust_gamma(img,random.choice(np.arange (0, 2, .4)),random.choice(np.arange (0, 2, .4)))
-
+                    try:
+                        rotateBy=random.choice(np.arange (0, 360, 90))
+                        M = cv2.getRotationMatrix2D((cX, cY), int(rotateBy), 1.0)
+                        img = cv2.warpAffine(img, M, (w, h))
+                    except:
+                        pass
+                    try:
+                        (h, w) = img.shape[:2]
+                        (cX, cY) = (w // 2, h // 2)
+                        xMin=random.choice(range(cX)-10)
+                        xMax=random.choice(range(cX)+10)
+                        yMin=random.choice(range(cY)-10)
+                        yMax=random.choice(range(cY)+10)
+                        img=img[yMin:yMax, xMin:xMax]
+                        img=cv2.resize(img, (256,256), interpolation = cv2.INTER_AREA)
+                    except:
+                        pass
 
                 data_x.append(img)
                 data_y.append(y)

@@ -8,7 +8,7 @@ globalAVGPooling = False
 num_classes = 20
 weight_decay = 1e-4
 loss = ['categorical_crossentropy', 'binary_crossentropy', 'mean_squared_error', 'mean_absolute_error'][0]
-n_epochs = 200
+n_epochs = 150
 batch_size = 128
 num_classes = 29
 
@@ -26,7 +26,7 @@ def train():
     model.compile(loss=loss, optimizer=opt_rms, metrics=['acc'])
     mdl_fit = model.fit_generator(train_dataset, steps_per_epoch=len(train_dataset), 
                         epochs=n_epochs, verbose=1, validation_data=test_dataset)
-
+    plt.figure(1)
     plt.plot(mdl_fit.history['loss'], label='train loss')
     plt.plot(mdl_fit.history['val_loss'], label='val loss')
     plt.legend()
@@ -34,6 +34,7 @@ def train():
     plt.savefig('lossR1.png')
 
     # plot the AUC
+    plt.figure(2)
     plt.plot(mdl_fit.history['acc'], label='train acc')
     plt.plot(mdl_fit.history['val_acc'], label='val acc')
     plt.legend()

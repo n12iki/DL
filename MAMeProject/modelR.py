@@ -16,11 +16,12 @@ def block(numConv,layer_in,n_filters,dropOutR,weight_decay):
         merge_input=Conv2D(n_filters,(1,1),padding='same',activation='relu',kernel_initializer='he_normal',kernel_regularizer=regularizers.l2(weight_decay))(layer_in)
     conv1=Conv2D(n_filters,(3,3),padding="same",activation="relu",kernel_initializer="he_normal",kernel_regularizer=regularizers.l2(weight_decay))(layer_in)
     for i in range(numConv-1):
-        prev=conv1
+        #prev=conv1
+        conv1=Dropout(dropOutR)(conv1)
         conv1=Conv2D(n_filters,(3,3),padding="same",activation="relu",kernel_initializer="he_normal",kernel_regularizer=regularizers.l2(weight_decay))(conv1)
         #conv1=add([conv1,prev])
         #conv1=add([conv1,merge_input])    
-    #drop=Dropout(dropOutR)(conv1)
+    conv1=Dropout(dropOutR)(conv1)
     skip=add([conv1,merge_input])
     layer_out=MaxPooling2D(pool_size=(2,2))(skip)
     layer_out = Activation('relu')(layer_out)
@@ -28,9 +29,9 @@ def block(numConv,layer_in,n_filters,dropOutR,weight_decay):
 
 def createModel(weight_decay,num_classes,globalAVGPooling):
     visible = Input(shape=(256, 256, 3))
-    layer=block(3,visible,32,0.2,weight_decay)
-    layer=block(2,layer,64,0.3,weight_decay)
-    layer=block(1,layer,64,0.4,weight_decay)
+    layer=block(3,visible,8,0.2,weight_decay)
+    layer=block(2,layer,8,0.3,weight_decay)
+    layer=block(2,layer,16,0.4,weight_decay)
 
     if globalAVGPooling:
       layer=GlobalAveragePooling2D()(layer)
@@ -40,7 +41,7 @@ def createModel(weight_decay,num_classes,globalAVGPooling):
 
     model=Model(inputs=visible,outputs=layer)
     model.summary()
-    plot_model(model, show_shapes=True, to_file='residual_module.png')
+    plot_model(model, show_shapes=True, to_file='residual_moduleR.png')
     return model
 
 def main():

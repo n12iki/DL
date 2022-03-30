@@ -6,9 +6,9 @@
 
 #SBATCH --workdir=.
 
-#SBATCH --output=ResNet_%j.out
+#SBATCH --output=ResNetR1_%j.out
 
-#SBATCH --error=ResNet_%j.err
+#SBATCH --error=ResNetR1_%j.err
 
 #SBATCH --cpus-per-task=40
 
