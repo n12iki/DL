@@ -53,7 +53,7 @@ class MAMeDataset(tf.keras.utils.Sequence):
                 y = np.zeros(self.n_class)
                 y[file[1]] = 1
                 img=file[0]
-                if self.mode=="test":
+                if self.mode=="train":
                     (h, w) = img.shape[:2]
                     (cX, cY) = (w // 2, h // 2)
                     try:
@@ -73,6 +73,13 @@ class MAMeDataset(tf.keras.utils.Sequence):
                         img=cv2.resize(img, (256,256), interpolation = cv2.INTER_AREA)
                     except:
                         pass
+                    try:
+                        img=self.adjust_gamma(img, gamma=1.0)
+                    #    img=tf.image.adjust_gamma(img,random.choice(np.arange (0, 2, .4)),random.choice(np.arange (0, 2, .4)))
+                    #    img=tf.image.adjust_hue(img, random.choice(np.arange (-1, 1, .1)), name=None)
+                    except:
+                        pass
+
 
                 data_x.append(img)
                 data_y.append(y)

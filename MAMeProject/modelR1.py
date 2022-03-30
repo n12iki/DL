@@ -29,9 +29,9 @@ def block(numConv,layer_in,n_filters,dropOutR,weight_decay):
 
 def createModel(weight_decay,num_classes,globalAVGPooling):
     visible = Input(shape=(256, 256, 3))
-    layer=block(4,visible,8,0.2,weight_decay)
-    layer=block(3,layer,16,0.3,weight_decay)
-    layer=block(2,layer,32,0.4,weight_decay)
+    layer=block(2,visible,8,0.2,weight_decay)
+    layer=block(2,layer,16,0.3,weight_decay)
+    layer=block(1,layer,32,0.4,weight_decay)
 
     if globalAVGPooling:
       layer=GlobalAveragePooling2D()(layer)
