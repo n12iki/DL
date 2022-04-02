@@ -31,7 +31,7 @@ def createModel(weight_decay,num_classes,globalAVGPooling):
     visible = Input(shape=(256, 256, 3))
     layer=block(2,visible,32,0.4,weight_decay)
     layer=block(2,layer,64,0.3,weight_decay)
-    layer=block(3,layer,64,0.2,weight_decay)
+    layer=block(3,layer,64,0.3,weight_decay)
 
     if globalAVGPooling:
       layer=GlobalAveragePooling2D()(layer)
