@@ -3,6 +3,8 @@ from data_loaderR import MAMeDataset
 import matplotlib.pyplot as plt
 from modelR import createModel
 from keras.callbacks import EarlyStopping, ModelCheckpoint
+import json
+
 img_size = 256
 globalAVGPooling = False
 num_classes = 20
@@ -23,20 +25,20 @@ def train():
     print(y.shape)
 
     model_checkpoint_callback = ModelCheckpoint(
-        filepath='./modelR/',
+        filepath='bestWeightsR.h5',
         save_weights_only=True,
         monitor='val_acc',
         mode='max',
         save_best_only=True)
 
-    early_stopping_monitor = EarlyStopping(patience=20) 
+    early_stopping_monitor = EarlyStopping(patience=10) 
     model = createModel(weight_decay,num_classes,globalAVGPooling)
     opt_rms = optimizers.RMSprop(learning_rate=0.0001, decay=1e-6)
     model.compile(loss=loss, optimizer=opt_rms, metrics=['acc'])
     mdl_fit = model.fit_generator(train_dataset, steps_per_epoch=len(train_dataset), 
                         epochs=n_epochs, verbose=1, validation_data=test_dataset,callbacks=[early_stopping_monitor,model_checkpoint_callback])
 
-    model.save_weights('./modelR')
+    model.save_weights('finalWieghts.h5')
     plt.figure(1)
     plt.plot(mdl_fit.history['loss'], label='train loss')
     plt.plot(mdl_fit.history['val_loss'], label='val loss')
@@ -52,5 +54,8 @@ def train():
     plt.show()
     plt.savefig('auc.png')
 
+    json_config = model.to_json()
+    with open('model_archR.json','w') as fp:
+        json.dump(json_config,fp)
 
 train()

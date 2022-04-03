@@ -31,7 +31,7 @@ def createModel(weight_decay,num_classes,globalAVGPooling):
     visible = Input(shape=(256, 256, 3))
     layer=block(3,visible,64,0.2,weight_decay)
     layer=block(2,layer,128,0.2,weight_decay)
-    layer=block(2,layer,256,0.2,weight_decay)
+    layer=block(2,layer,256,0.1,weight_decay)
     layer=block(3,layer,512,0.1,weight_decay)
     layer=block(2,layer,1023,0.1,weight_decay)
 
