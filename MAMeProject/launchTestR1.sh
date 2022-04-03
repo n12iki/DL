@@ -1,14 +1,14 @@
 #!/bin/bash
 
-#sBATCH --job-name="ResNetR2"
+#sBATCH --job-name="ResNetR1"
 
 #SBATCH --qos=training
 
 #SBATCH --workdir=.
 
-#SBATCH --output=ResNetR2_%j.out
+#SBATCH --output=ResNetR1_%j.out
 
-#SBATCH --error=ResNetR2_%j.err
+#SBATCH --error=ResNetR1_%j.err
 
 #SBATCH --cpus-per-task=40
 
