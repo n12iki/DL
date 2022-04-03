@@ -30,7 +30,7 @@ def train():
         save_best_only=True)
 
 
-    early_stopping_monitor = EarlyStopping(patience=10) 
+    early_stopping_monitor = EarlyStopping(patience=20) 
     model = createModel(weight_decay,num_classes,globalAVGPooling)
     opt_rms = optimizers.RMSprop(learning_rate=0.0001, decay=1e-6)
     model.compile(loss=loss, optimizer=opt_rms, metrics=['acc'])

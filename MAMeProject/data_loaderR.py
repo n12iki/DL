@@ -58,7 +58,7 @@ class MAMeDataset(tf.keras.utils.Sequence):
 
             data_x = tf.image.random_flip_left_right(data_x, seed)
             data_x = tf.image.random_flip_up_down(data_x, seed)
-            data_x = tf.image.random_brightness(data_x, .3, seed)
+            data_x = tf.image.random_brightness(data_x, .5, seed)
             #data_x = tf.image.random_contrast(data_x, 0, 2, seed)
             #data_x = tf.image.random_hue(data_x, 0.5, seed)
 

@@ -9,7 +9,7 @@ num_classes = 20
 weight_decay = 1e-4
 loss = ['categorical_crossentropy', 'binary_crossentropy', 'mean_squared_error', 'mean_absolute_error'][0]
 n_epochs = 150
-batch_size = 128
+batch_size = 32
 num_classes = 29
 
 def train():
@@ -29,7 +29,7 @@ def train():
         mode='max',
         save_best_only=True)
 
-    early_stopping_monitor = EarlyStopping(patience=10) 
+    early_stopping_monitor = EarlyStopping(patience=20) 
     model = createModel(weight_decay,num_classes,globalAVGPooling)
     opt_rms = optimizers.RMSprop(learning_rate=0.0001, decay=1e-6)
     model.compile(loss=loss, optimizer=opt_rms, metrics=['acc'])
