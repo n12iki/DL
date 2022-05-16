@@ -4,8 +4,6 @@
 
 #SBATCH --qos=training
 
-#SBATCH --workdir=.
-
 #SBATCH --output=mame_%j.out
 
 #SBATCH --error=mame_%j.err
@@ -25,7 +23,7 @@ cp data_loader.py $SLURM_JOBID
 cp model.py $SLURM_JOBID
 cp trainer.py $SLURM_JOBID
 
-python test.py -$SLURM_JOBID
+python trainer.py -$SLURM_JOBID
 
 mv "mame_$SLURM_JOBID.out" $SLURM_JOBID
 mv "mame_$SLURM_JOBID.err" $SLURM_JOBID

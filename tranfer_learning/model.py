@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from keras import applications
 
 IMG_SIZE = 256
-NUM_CLASSES = 20
+NUM_CLASSES = 29
 
 def create_model():
   model = applications.resnet50.ResNet50(
