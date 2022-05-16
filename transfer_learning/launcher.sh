@@ -27,3 +27,5 @@ python trainer.py -$SLURM_JOBID
 
 mv "mame_$SLURM_JOBID.out" $SLURM_JOBID
 mv "mame_$SLURM_JOBID.err" $SLURM_JOBID
+mv "acc.png" $SLURM_JOBID
+mv "loss.png" $SLURM_JOBID
