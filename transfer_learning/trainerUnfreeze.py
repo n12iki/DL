@@ -18,7 +18,10 @@ def train():
         batch_size=batch_size, n_class=num_classes, mode='val')
 
     model = create_model()
-
+    lossList=[]
+    val=[]
+    acc=[]
+    val_acc=[]
     # early_stopping_monitor = EarlyStopping(monitor='val_accuracy', min_delta=0, patience=10, verbose=1, mode='auto')
     early_stopping_monitor = EarlyStopping(patience=10)
     opt_rms = optimizers.RMSprop(learning_rate=0.0001, decay=1e-6)
@@ -28,21 +31,39 @@ def train():
         # , callbacks=[early_stopping_monitor]
         epochs=n_epochs, verbose=1, validation_data=test_dataset
     )
+
+    lossList.extend(mdl_fit.history['loss'])
+    val.extend(mdl_fit.history['val_loss'])
+    acc.extend(mdl_fit.history['acc'])
+    val_acc.extend(mdl_fit.history['val_acc'])
+
     for layer in model.layers[100:]:
         layer.trainable = True
+    
+    model.compile(loss=loss, optimizer=opt_rms, metrics=['acc'])
+    mdl_fit = model.fit_generator(
+        train_dataset, steps_per_epoch=len(train_dataset),
+        # , callbacks=[early_stopping_monitor]
+        epochs=n_epochs, verbose=1, validation_data=test_dataset
+    )
+
+    lossList.extend(mdl_fit.history['loss'])
+    val.extend(mdl_fit.history['val_loss'])
+    acc.extend(mdl_fit.history['acc'])
+    val_acc.extend(mdl_fit.history['val_acc'])
 
     plt.plot(mdl_fit.history['loss'], label='train loss')
     plt.plot(mdl_fit.history['val_loss'], label='val loss')
     plt.legend()
     plt.show()
-    plt.savefig('loss.png')
+    plt.savefig('lossUnFreeze.png')
 
     # plot the AUC
     plt.plot(mdl_fit.history['acc'], label='train acc')
     plt.plot(mdl_fit.history['val_acc'], label='val acc')
     plt.legend()
     plt.show()
-    plt.savefig('acc.png')
+    plt.savefig('accUnFreeze.png')
 
 
 if __name__ == '__main__':
