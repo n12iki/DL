@@ -23,9 +23,10 @@ cp data_loader.py $SLURM_JOBID
 cp model.py $SLURM_JOBID
 cp trainerUnfreeze.py $SLURM_JOBID
 
-python trainer.py -$SLURM_JOBID
+python trainerUnfreeze.py -$SLURM_JOBID
 
 mv "mame_$SLURM_JOBID.out" $SLURM_JOBID
 mv "mame_$SLURM_JOBID.err" $SLURM_JOBID
-mv "acc.png" $SLURM_JOBID
-mv "loss.png" $SLURM_JOBID
+mv "UnfreezeAcc.png" $SLURM_JOBID
+mv "UnfreezeLoss.png" $SLURM_JOBID
+mv 'bestWeightsUnFreeze.h5' $SLURM_JOBID

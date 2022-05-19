@@ -1,13 +1,13 @@
 from tensorflow.keras import optimizers
-from data_loader import MAMeDataset
+from data_loaderUnfreeze import MAMeDataset
 import matplotlib.pyplot as plt
-from model import create_model
-from keras.callbacks import EarlyStopping  # , ModelCheckpoint
+from modelU import create_model
+from keras.callbacks import EarlyStopping, ModelCheckpoint  # , ModelCheckpoint
 
 weight_decay = 1e-5
 loss = ['categorical_crossentropy', 'binary_crossentropy',
         'mean_squared_error', 'mean_absolute_error'][0]
-n_epochs = 50
+n_epochs = 150
 batch_size = 32
 num_classes = 29
 
@@ -18,52 +18,36 @@ def train():
         batch_size=batch_size, n_class=num_classes, mode='val')
 
     model = create_model()
-    lossList=[]
-    val=[]
-    acc=[]
-    val_acc=[]
+    model_checkpoint_callback = ModelCheckpoint(
+        filepath='bestWeightsUnFreeze.h5',
+        save_weights_only=True,
+        monitor='val_acc',
+        mode='max',
+        save_best_only=True)
+
     # early_stopping_monitor = EarlyStopping(monitor='val_accuracy', min_delta=0, patience=10, verbose=1, mode='auto')
-    early_stopping_monitor = EarlyStopping(patience=15,monitor='val_accuracy',mode="max")
-    opt_rms = optimizers.RMSprop(learning_rate=0.0001, decay=1e-6)
+    early_stopping_monitor = EarlyStopping(patience=20) 
+    opt_rms = optimizers.RMSprop(learning_rate=0.00001, decay=1e-6)
     model.compile(loss=loss, optimizer=opt_rms, metrics=['acc'])
     mdl_fit = model.fit_generator(
         train_dataset, steps_per_epoch=len(train_dataset),
-        callbacks=[early_stopping_monitor],
+        callbacks=[early_stopping_monitor,model_checkpoint_callback],
         epochs=n_epochs, verbose=1, validation_data=test_dataset
     )
-
-    lossList.extend(mdl_fit.history['loss'])
-    val.extend(mdl_fit.history['val_loss'])
-    acc.extend(mdl_fit.history['acc'])
-    val_acc.extend(mdl_fit.history['val_acc'])
-
-    for layer in model.layers[100:]:
-        layer.trainable = True
-    
-    model.compile(loss=loss, optimizer=opt_rms, metrics=['acc'])
-    mdl_fit = model.fit_generator(
-        train_dataset, steps_per_epoch=len(train_dataset),
-        # , callbacks=[early_stopping_monitor]
-        epochs=n_epochs, verbose=1, validation_data=test_dataset
-    )
-
-    lossList.extend(mdl_fit.history['loss'])
-    val.extend(mdl_fit.history['val_loss'])
-    acc.extend(mdl_fit.history['acc'])
-    val_acc.extend(mdl_fit.history['val_acc'])
-
+    plt.figure(1)
     plt.plot(mdl_fit.history['loss'], label='train loss')
     plt.plot(mdl_fit.history['val_loss'], label='val loss')
     plt.legend()
     plt.show()
-    plt.savefig('lossUnFreeze.png')
+    plt.savefig('UnfreezeLoss.png')
 
     # plot the AUC
+    plt.figure(2)
     plt.plot(mdl_fit.history['acc'], label='train acc')
     plt.plot(mdl_fit.history['val_acc'], label='val acc')
     plt.legend()
     plt.show()
-    plt.savefig('accUnFreeze.png')
+    plt.savefig('UnfreezeAcc.png')
 
 
 if __name__ == '__main__':
